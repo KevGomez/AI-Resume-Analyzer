@@ -1,20 +1,52 @@
+# Web Framework
 Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.0.5
-Flask-Cors==4.0.0
-psycopg2-binary==2.9.9
+Flask-CORS==4.0.0
 python-dotenv==1.0.0
-openai==1.3.5
-python-jose==3.3.0
-PyJWT==2.8.0
-requests==2.31.0
 gunicorn==21.2.0
-SQLAlchemy-Utils==0.41.1
-PyMuPDF==1.23.8
-python-docx==1.1.0
+
+# Database
+psycopg2-binary==2.9.9
+SQLAlchemy==2.0.23
+redis==5.0.1
+
+# File Processing
+python-docx==1.0.1
+PyPDF2==3.0.1
+aiofiles==23.2.1
+
+# NLP
 spacy==3.7.2
 en-core-web-lg @ https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.7.1/en_core_web_lg-3.7.1-py3-none-any.whl
+
+# Authentication
+firebase-admin==6.2.0
+
+# API Documentation
+apispec==6.3.0
 marshmallow==3.20.1
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Development
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+isort==5.12.0
+
+# Monitoring and Logging
 python-json-logger==2.0.7
-redis==5.0.1
+structlog==23.2.0
+
+# Security
+python-jose==3.3.0
+cryptography==41.0.7
+bcrypt==4.1.1
+
+# Rate Limiting
 ratelimit==2.2.1

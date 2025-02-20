@@ -6,6 +6,9 @@ import {
 } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import { injectThemeScript } from "./utils/themeScript";
+import { AuthProvider } from "./context/AuthContext";
+import ErrorBoundary from "./components/ErrorBoundary";
+import AppRoutes from "./routes/AppRoutes";
 
 // Lazy load components
 const MainLayout = lazy(() => import("./layouts/MainLayout"));
@@ -24,7 +27,7 @@ const Loading = () => (
   </div>
 );
 
-// Inject theme script immediately in a self-executing function
+// Inject theme script immediately
 (() => {
   if (typeof window !== "undefined") {
     injectThemeScript();
@@ -43,47 +46,13 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          {/* Auth Routes */}
-          <Route path="login" element={<Login />} />
-          <Route path="signup" element={<Signup />} />
-
-          {/* Protected Routes */}
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
-            <Route
-              path="dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="upload"
-              element={
-                <ProtectedRoute>
-                  <Upload />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analysis"
-              element={
-                <ProtectedRoute>
-                  <Analysis />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* 404 Route */}
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

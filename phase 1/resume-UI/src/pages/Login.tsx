@@ -1,17 +1,32 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "../components/common/Button";
 import { authService } from "../services/authService";
 import { LoginFormData } from "../types";
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../config/firebase';
+import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+
+interface LocationState {
+  from?: {
+    pathname: string;
+  };
+}
 
 const Login = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { checkSession } = useAuth();
+
+  const locationState = location.state as LocationState;
+  const from = locationState?.from?.pathname || '/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,10 +34,18 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await authService.login(formData);
-      navigate("/");
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      // Verify session is properly set up
+      const isValid = await checkSession();
+      if (isValid) {
+        navigate(from, { replace: true });
+      } else {
+        setError('Failed to establish session. Please try again.');
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to sign in");
+      setError(
+        err instanceof Error ? err.message : 'An error occurred during login'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -32,6 +55,10 @@ const Login = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+  if (isLoading) {
+    return <LoadingSpinner text="Logging in..." />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center">

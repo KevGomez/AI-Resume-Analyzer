@@ -1,38 +1,33 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { auth } from "../../config/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { Loading } from "../common/Loading";
+import { useAuth } from "../../context/AuthContext";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { currentUser, loading, checkSession } = useAuth();
+  const [isValidSession, setIsValidSession] = useState<boolean | null>(null);
   const location = useLocation();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsAuthenticated(!!user);
-    });
+    const validateSession = async () => {
+      const isValid = await checkSession();
+      setIsValidSession(isValid);
+    };
+    validateSession();
+  }, [checkSession]);
 
-    return () => unsubscribe();
-  }, []);
-
-  if (isAuthenticated === null) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loading size="lg" text="Loading..." />
-      </div>
-    );
+  if (loading || isValidSession === null) {
+    return <LoadingSpinner />;
   }
 
-  if (!isAuthenticated) {
+  if (!currentUser || !isValidSession) {
+    // Redirect to login while saving the attempted url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
-};
-
-export default ProtectedRoute;
+}

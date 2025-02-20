@@ -1,53 +1,83 @@
-import os
 import logging
-from logging.handlers import RotatingFileHandler
+import logging.handlers
+import os
 from datetime import datetime
+from pathlib import Path
+from typing import Optional, Union
 from functools import wraps
 
-# Create logs directory if it doesn't exist
-LOGS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs')
-if not os.path.exists(LOGS_DIR):
-    os.makedirs(LOGS_DIR)
-
-def setup_logger(name, log_file, level=logging.INFO):
-    """Function to setup a custom logger"""
-    # Create logs directory if it doesn't exist
-    if not os.path.exists(LOGS_DIR):
-        os.makedirs(LOGS_DIR)
-        
-    # Create formatter
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s'
+def setup_logging(app_name: str = 'resume-api', log_level: str = 'INFO',
+                 log_dir: Optional[Union[str, Path]] = None) -> logging.Logger:
+    """Configure application logging
+    
+    Args:
+        app_name: Name of the application
+        log_level: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        log_dir: Directory to store log files
+    
+    Returns:
+        Logger instance
+    """
+    # Create logger
+    logger = logging.getLogger(app_name)
+    logger.setLevel(getattr(logging, log_level.upper()))
+    
+    # Create formatters
+    console_formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    file_formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
     )
     
-    # Create handlers
-    file_handler = RotatingFileHandler(
-        os.path.join(LOGS_DIR, log_file),
-        maxBytes=10000000,  # 10MB
+    # Console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+    
+    # File handlers
+    log_path: Path = Path(log_dir) if log_dir else Path(__file__).parent.parent.parent / 'logs'
+    log_path.mkdir(exist_ok=True)
+    
+    # Regular log file
+    log_file = log_path / f"{app_name}.log"
+    file_handler = logging.handlers.RotatingFileHandler(
+        str(log_file),  # Convert Path to str for handler
+        maxBytes=10485760,  # 10MB
         backupCount=5
     )
-    file_handler.setFormatter(formatter)
+    file_handler.setFormatter(file_formatter)
+    logger.addHandler(file_handler)
     
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
+    # Error log file
+    error_log_file = log_path / f"{app_name}_error.log"
+    error_handler = logging.handlers.RotatingFileHandler(
+        str(error_log_file),  # Convert Path to str for handler
+        maxBytes=10485760,  # 10MB
+        backupCount=5
+    )
+    error_handler.setLevel(logging.ERROR)
+    error_handler.setFormatter(file_formatter)
+    logger.addHandler(error_handler)
     
-    # Create logger
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+    # Set logging level for other libraries
+    logging.getLogger('werkzeug').setLevel(logging.WARNING)
+    logging.getLogger('sqlalchemy').setLevel(logging.WARNING)
     
-    # Add handlers if they don't exist
-    if not logger.handlers:
-        logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
+    logger.info(f"Logging setup completed. Log files will be stored in {log_path}")
     
     return logger
 
-# Create specific loggers
-resume_logger = setup_logger('resume_service', 'resume_service.log')
-file_logger = setup_logger('file_service', 'file_service.log')
-skill_logger = setup_logger('skill_service', 'skill_service.log')
-auth_logger = setup_logger('auth_service', 'auth_service.log')
-db_logger = setup_logger('db_service', 'db_service.log')
+def get_logger(name: Optional[str] = None) -> logging.Logger:
+    """Get a logger instance
+    
+    Args:
+        name: Logger name (defaults to root logger)
+    
+    Returns:
+        Logger instance
+    """
+    return logging.getLogger(name)
 
 def log_function_call(logger):
     """Decorator to log function calls with parameters and return values"""
@@ -79,3 +109,7 @@ def log_function_call(logger):
                 
         return wrapper
     return decorator 
+
+# Create specific loggers
+skill_logger = get_logger('skill_service')
+resume_logger = get_logger('resume_service') 
