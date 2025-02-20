@@ -1,0 +1,13 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "resumes": {
+      ".indexOn": ["user_id"],
+      "$resumeId": {
+        ".read": "auth != null && data.child('user_id').val() === auth.uid",
+        ".write": "auth != null && (!data.exists() || data.child('user_id').val() === auth.uid)"
+      }
+    }
+  }
+}

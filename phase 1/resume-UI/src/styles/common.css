@@ -1,0 +1,368 @@
+/* Base styles */
+:root {
+  --primary-color: #38bdf8;
+  --accent-color: #e879f9;
+  --primary-light: rgba(56, 189, 248, 0.2);
+  --primary-light-hover: rgba(56, 189, 248, 0.3);
+  --accent-light: rgba(232, 121, 249, 0.2);
+  --accent-light-hover: rgba(232, 121, 249, 0.3);
+
+  /* Add transition for theme changes */
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* Dark theme (default) */
+.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --bg-tertiary: rgba(31, 41, 55, 0.3);
+  --bg-overlay: rgba(17, 24, 39, 0.8);
+  --bg-dropdown: #1f2937;
+  --bg-chat: rgba(31, 41, 55, 0.4);
+  --bg-chat-user: rgba(56, 189, 248, 0.2);
+  --bg-chat-assistant: rgba(31, 41, 55, 0.4);
+  --bg-chat-popup: rgba(31, 41, 55, 0.95);
+  --bg-chat-input: rgba(31, 41, 55, 0.6);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --hover-bg: rgba(255, 255, 255, 0.1);
+  --icon-color: rgba(255, 255, 255, 0.9);
+  color-scheme: dark;
+}
+
+/* Light theme */
+.light {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --bg-tertiary: rgba(243, 244, 246, 0.7);
+  --bg-overlay: rgba(255, 255, 255, 0.8);
+  --bg-dropdown: #ffffff;
+  --bg-chat: rgba(243, 244, 246, 0.8);
+  --bg-chat-user: rgba(56, 189, 248, 0.15);
+  --bg-chat-assistant: rgba(243, 244, 246, 0.8);
+  --bg-chat-popup: rgba(255, 255, 255, 0.95);
+  --bg-chat-input: rgba(243, 244, 246, 0.9);
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: rgba(75, 85, 99, 0.5);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --icon-color: rgba(17, 24, 39, 0.9);
+  color-scheme: light;
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme-aware components */
+.bg-dark-300\/30,
+.bg-dark-200\/40,
+.bg-dark-200\/50 {
+  background-color: var(--bg-tertiary);
+  backdrop-filter: blur(8px);
+}
+
+/* Dropdown Menu */
+.bg-dark-200 {
+  background-color: var(--bg-dropdown);
+}
+
+/* Chat Components */
+.bg-dark-200\/40 {
+  background-color: var(--bg-chat);
+}
+
+/* Chat Popup */
+.fixed.bottom-0.right-0 .bg-dark-300\/30,
+.fixed.bottom-0.right-0 .bg-dark-200\/40 {
+  background-color: var(--bg-chat-popup);
+}
+
+/* Robot Icon */
+.fixed.bottom-0.right-0 svg {
+  color: var(--icon-color);
+}
+
+/* Chat Messages */
+[role="user"] .bg-primary-500\/20 {
+  background-color: var(--bg-chat-user);
+}
+
+[role="assistant"] .bg-dark-200\/40 {
+  background-color: var(--bg-chat-assistant);
+}
+
+/* Message Bubbles */
+.bg-primary-500\/20 {
+  background-color: var(--primary-light);
+}
+
+.hover\:bg-primary-500\/30:hover {
+  background-color: var(--primary-light-hover);
+}
+
+/* Text Colors */
+.text-white,
+.text-white\/90 {
+  color: var(--text-primary);
+}
+
+.text-white\/70,
+.text-white\/60,
+.text-white\/50 {
+  color: var(--text-secondary);
+}
+
+.text-primary {
+  color: var(--text-primary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-tertiary {
+  color: var(--text-tertiary);
+}
+
+.text-primary-400 {
+  color: var(--primary-color);
+}
+
+.text-accent-400 {
+  color: var(--accent-color);
+}
+
+/* Borders */
+.border-white\/10 {
+  border-color: var(--border-color);
+}
+
+/* Hover states */
+.hover\:bg-dark-200:hover,
+.hover\:bg-dark-200\/50:hover,
+.hover\:bg-dark-200\/60:hover {
+  background-color: var(--hover-bg);
+}
+
+.hover\:text-white:hover {
+  color: var(--text-primary);
+}
+
+.hover\:text-primary:hover {
+  color: var(--text-primary);
+}
+
+.hover\:bg-dark-300:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Chat Input */
+input.bg-dark-200\/40 {
+  background-color: var(--bg-chat);
+  color: var(--text-primary);
+}
+
+input.bg-dark-200\/40::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Navigation Links */
+.nav-link {
+  position: relative;
+  color: var(--text-secondary);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover,
+.nav-link-active {
+  color: var(--text-primary);
+}
+
+.nav-link::after,
+.nav-link-active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--accent-color)
+  );
+  transition: width 0.2s;
+}
+
+.nav-link:hover::after,
+.nav-link-active::after {
+  width: 100%;
+}
+
+/* Animations */
+@keyframes gradient {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  50% {
+    transform: translate(50%, 50%);
+  }
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+
+.animate-gradient {
+  animation: gradient 15s ease infinite;
+}
+
+/* Common Utilities */
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Typography */
+.gradient-text {
+  @apply bg-gradient-to-r from-primary-400 to-accent-400 text-transparent bg-clip-text;
+}
+
+/* Custom Scrollbar Styles */
+/* For Webkit browsers (Chrome, Safari, etc.) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-secondary);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-primary);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-secondary) var(--bg-secondary);
+}
+
+/* AI Assistant Popup Specific Styles */
+.fixed.bottom-0.right-0 {
+  /* Container background */
+  .bg-dark-300\/30,
+  .bg-dark-200\/40 {
+    background-color: var(--bg-chat-popup);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Header text */
+  h3.text-white,
+  .text-white {
+    color: var(--text-primary);
+  }
+
+  /* Subtext */
+  p.text-white\/50,
+  .text-white\/40,
+  .text-white\/70 {
+    color: var(--text-tertiary);
+  }
+
+  /* Close button */
+  button.text-white\/50 {
+    color: var(--text-secondary);
+  }
+
+  button.text-white\/50:hover {
+    color: var(--text-primary);
+  }
+
+  /* Welcome message */
+  h4.text-white {
+    color: var(--text-primary);
+  }
+
+  /* Input field */
+  input.bg-dark-200,
+  input.bg-dark-200\/40 {
+    background-color: var(--bg-chat-input);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  input.bg-dark-200::placeholder,
+  input.bg-dark-200\/40::placeholder {
+    color: var(--text-tertiary);
+  }
+
+  /* Message bubbles */
+  .bg-primary-500\/20 {
+    background-color: var(--bg-chat-user);
+  }
+
+  .bg-dark-200\/40 {
+    background-color: var(--bg-chat-assistant);
+  }
+
+  /* Robot icon */
+  svg.text-white\/70,
+  svg.text-white {
+    color: var(--icon-color);
+  }
+
+  /* Borders */
+  .border-white\/10 {
+    border-color: var(--border-color);
+  }
+
+  /* Hover states */
+  .hover\:bg-dark-200:hover,
+  .hover\:bg-dark-200\/50:hover {
+    background-color: var(--hover-bg);
+  }
+
+  .hover\:text-white:hover {
+    color: var(--text-primary);
+  }
+}
+
+/* Theme-aware backgrounds */
+.bg-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+/* Search Bar specific styles */
+.SearchBar-input {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.SearchBar-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.SearchBar-icon {
+  color: var(--text-secondary);
+}
